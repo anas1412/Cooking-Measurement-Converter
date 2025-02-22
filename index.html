@@ -13,7 +13,7 @@
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8 space-y-8">
         <!-- Dark Mode Toggle Button -->
         <button id="darkModeToggle" class="bg-gray-800 text-white p-2 rounded-full mb-4">
-            <i class="fas fa-moon"></i> <!-- Changed text to moon icon -->
+            <i class="fas fa-moon"></i>
         </button>
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 flex items-center justify-center">
             <i class="fas fa-utensils mr-3 text-[#FF9A8C]"></i>Cooking Measurement Converter
@@ -238,17 +238,17 @@
         style.innerHTML = `
             .dark-mode {
                 background: linear-gradient(to bottom right, #1e1e1e, #2c2c2c); /* Modern dark gradient */
-                color: #ffffff; /* White text for contrast */
+                color: #000000; /* Black text for contrast */
             }
             .dark-mode .bg-white {
                 background-color: #2c2c2c; /* Darker background for white elements */
             }
             .dark-mode .text-gray-800 {
-                color: #ffffff; /* Keep title color white */
+                color: #000000; /* Change title color to black */
             }
             .dark-mode .text-gray-700,
             .dark-mode input {
-                color: #ffffff; /* White text for input fields */
+                color: #000000; /* Black text for input fields */
             }
             .dark-mode input {
                 background-color: #444444; /* Darker background for input fields */
@@ -265,7 +265,7 @@
             }
             .dark-mode button {
                 background-color: #555555; /* Darker button background */
-                color: #ffffff; /* White button text */
+                color: #000000; /* Black button text */
                 border: none;
                 transition: background-color 0.3s;
             }
