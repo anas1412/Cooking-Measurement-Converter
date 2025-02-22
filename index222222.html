@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Molecular Phase Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 10;
+            transition: all 0.3s ease;
+            max-width: 280px;
+        }
+
+        #controls:hover {
+            opacity: 1;
+        }
+
+        .control-group {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        label {
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            max-width: 240px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #4CAF50;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #45a049;
+        }
+
+        .phase-indicator {
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: #4CAF50;
+            text-shadow: 0 0 6px rgba(76, 175, 80, 0.2);
+            font-weight: 500;
+        }
+
+        button {
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: linear-gradient(145deg, #45a049, #3d8b40);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        canvas {
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #tempValue {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .phase-indicator {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="controls">
+            <div class="control-group">
+                <label for="tempSlider">Temperature: <span id="tempValue">25</span> °C</label>
+                <input type="range" id="tempSlider" min="-20" max="150" value="25">
+                <div class="phase-indicator">Current Phase: <span id="phaseText">Water</span></div>
+            </div>
+            <div class="control-group">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="trailCheckbox" checked>
+                    <label for="trailCheckbox">Show Trails</label>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="resetBtn">Reset Simulation</button>
+                <button id="togglePauseBtn">Pause</button>
+            </div>
+        </div>
+        <canvas id="simulationCanvas"></canvas>
+    </div>
+
+    <script>
+        class Molecule {
+            constructor(x, y, vx = 0, vy = 0, baseX = null, baseY = null) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.baseX = baseX !== null ? baseX : x;
+                this.baseY = baseY !== null ? baseY : y;
+                this.radius = 5;
+                this.temperature = 25; // Default temperature
+            }
+
+            updateLiquidGas(mouse, canvas) {
+                // Mouse interaction
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const repulsionRadius = 50;
+
+                    if (dist < repulsionRadius && dist > 0) {
+                        const force = (repulsionRadius - dist) / repulsionRadius;
+                        this.vx += (dx / dist) * force * 0.5;
+                        this.vy += (dy / dist) * force * 0.5;
+                    }
+                }
+
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Boundary collision
+                const energyConservation = this.temperature > 100 ? 0.99 : 0.95;
+
+                if (this.x < this.radius) {
+                    this.x = this.radius;
+                    this.vx = Math.abs(this.vx) * energyConservation;
+                } else if (this.x > canvas.width - this.radius) {
+                    this.x = canvas.width - this.radius;
+                    this.vx = -Math.abs(this.vx) * energyConservation;
+                }
+
+                if (this.y < this.radius) {
+                    this.y = this.radius;
+                    this.vy = Math.abs(this.vy) * energyConservation;
+                } else if (this.y > canvas.height - this.radius) {
+                    this.y = canvas.height - this.radius;
+                    this.vy = -Math.abs(this.vy) * energyConservation;
+                }
+
+                // Maintain temperature-based velocity
+                const targetSpeed = this.temperature > 100 ?
+                    3 + ((this.temperature - 100) / 50) :
+                    1.5 + (this.temperature / 100);
+
+                const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (currentSpeed < targetSpeed * 0.8) {
+                    const angle = Math.random() * 2 * Math.PI;
+                    this.vx = Math.cos(angle) * targetSpeed;
+                    this.vy = Math.sin(angle) * targetSpeed;
+                }
+            }
+        }
+
+        class MolecularSimulation {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.molecules = [];
+                this.mouse = { x: null, y: null };
+                this.phase = 'water';
+                this.isPaused = false;
+                this.baseMoleculeCount = 100;
+                this.trailEffect = true;
+                this.temperature = 25;
+
+                this.resizeCanvas();
+                this.initEventListeners();
+                this.initMolecules();
+            }
+
+            resizeCanvas() {
+                this.canvas.width = this.canvas.clientWidth;
+                this.canvas.height = this.canvas.clientHeight;
+            }
+
+            initEventListeners() {
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                });
+
+                this.canvas.addEventListener('mouseleave', () => {
+                    this.mouse.x = null;
+                    this.mouse.y = null;
+                });
+
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+
+            initMolecules() {
+                this.molecules = [];
+                for (let i = 0; i < this.baseMoleculeCount; i++) {
+                    const x = Math.random() * (this.canvas.width - 20) + 10;
+                    const y = Math.random() * (this.canvas.height - 20) + 10;
+                    const angle = Math.random() * 2 * Math.PI;
+                    const speed = this.phase === 'gas' ? 3 : 1.5;
+                    this.molecules.push(new Molecule(
+                        x, y,
+                        Math.cos(angle) * speed,
+                        Math.sin(angle) * speed
+                    ));
+                }
+            }
+
+            getPhase(temp) {
+                if (temp <= 0) return 'ice';
+                if (temp >= 100) return 'gas';
+                return 'water';
+            }
+
+            setPhase(temp) {
+                const newPhase = this.getPhase(temp);
+                this.temperature = temp;
+
+                if (newPhase !== this.phase) {
+                    this.phase = newPhase;
+                    this.molecules.forEach(molecule => {
+                        molecule.temperature = temp;
+                        if (this.phase === 'ice') {
+                            molecule.baseX = molecule.x;
+                            molecule.baseY = molecule.y;
+                            molecule.vx = 0;
+                            molecule.vy = 0;
+                        } else {
+                            const speed = this.phase === 'gas' ? 3 : 1.5;
+                            const angle = Math.random() * 2 * Math.PI;
+                            molecule.vx = Math.cos(angle) * speed;
+                            molecule.vy = Math.sin(angle) * speed;
+                        }
+                    });
+                } else {
+                    this.molecules.forEach(molecule => {
+                        molecule.temperature = temp;
+                    });
+                }
+            }
+
+            setTrailEffect(enabled) {
+                this.trailEffect = enabled;
+            }
+
+            togglePause() {
+                this.isPaused = !this.isPaused;
+                return this.isPaused;
+            }
+
+            update() {
+                if (this.isPaused) return;
+
+                this.molecules.forEach(molecule => {
+                    if (this.phase === 'ice') {
+                        const dx = molecule.baseX - molecule.x;
+                        const dy = molecule.baseY - molecule.y;
+                        molecule.x += dx * 0.1;
+                        molecule.y += dy * 0.1;
+                    } else {
+                        molecule.updateLiquidGas(this.mouse, this.canvas);
+                    }
+                });
+            }
+
+            draw() {
+                if (!this.trailEffect) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                } else {
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                }
+
+                this.molecules.forEach(molecule => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(molecule.x, molecule.y, molecule.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = this.phase === 'ice' ? '#B0E2FF' :
+                        this.phase === 'gas' ? '#FF8C8C' : '#4F94CD';
+                    this.ctx.fill();
+                });
+            }
+        }
+
+        // Initialize simulation
+        const simulation = new MolecularSimulation(document.getElementById('simulationCanvas'));
+
+        // Event Listeners
+        tempSlider.addEventListener('input', (e) => {
+            const temp = parseInt(e.target.value);
+            tempValue.textContent = temp;
+            simulation.setPhase(temp);
+            phaseText.textContent = simulation.phase.charAt(0).toUpperCase() + simulation.phase.slice(1);
+        });
+
+        trailCheckbox.addEventListener('change', (e) => {
+            simulation.setTrailEffect(e.target.checked);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            simulation.initMolecules();
+        });
+
+        togglePauseBtn.addEventListener('click', () => {
+            const isPaused = simulation.togglePause();
+            togglePauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+        });
+
+        // Animation Loop
+        function animate() {
+            simulation.update();
+            simulation.draw();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>

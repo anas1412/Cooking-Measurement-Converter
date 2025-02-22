@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooking Measurement Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-br from-[#FFE5D9] to-[#FFD1C1] min-h-screen p-4 md:p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8 space-y-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 flex items-center justify-center">
+            <i class="fas fa-utensils mr-3 text-[#FF9A8C]"></i>Cooking Measurement Converter
+        </h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+            <!-- Swap Button -->
+            <button id="swapBtn"
+                class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-[#FF9A8C] hover:bg-[#FF8577] text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 border-2 border-[#FFB5A7] hover:shadow-2xl">
+                <i class="fas fa-arrows-rotate text-lg"></i>
+            </button>
+
+            <!-- From Section -->
+            <div class="bg-[#FFF5F2] p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6 flex items-center">
+                    <i class="fas fa-arrow-right-from-bracket mr-3 text-[#FF9A8C]"></i>Convert From
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Value</label>
+                        <input type="number" id="fromValue"
+                            class="w-full px-4 py-3 border border-[#FFB5A7] rounded-lg focus:ring-2 focus:ring-[#FF9A8C] focus:border-[#FF9A8C] transition-all duration-200"
+                            value="1">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Unit</label>
+                        <select id="fromUnit"
+                            class="w-full px-4 py-3 border border-[#FFB5A7] rounded-lg focus:ring-2 focus:ring-[#FF9A8C] focus:border-[#FF9A8C] transition-all duration-200 cursor-pointer">
+                            <option value="g">⚖️ Grams (g)</option>
+                            <option value="kg">📊 Kilograms (kg)</option>
+                            <option value="ml">💧 Milliliters (ml)</option>
+                            <option value="l">🫗 Liters (l)</option>
+                            <option value="oz">🏋️ Ounces (oz)</option>
+                            <option value="lb">⚓ Pounds (lb)</option>
+                            <option value="yogurt">🫐 Yogurt Container (12 oz)</option>
+                            <option value="ladle">🥄 Ladle (120 ml)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- To Section -->
+            <div class="bg-[#FFF5F2] p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6 flex items-center">
+                    <i class="fas fa-arrow-right-to-bracket mr-3 text-[#FF9A8C]"></i>Convert To
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Result</label>
+                        <input type="number" id="toValue"
+                            class="w-full px-4 py-3 border border-[#FFB5A7] rounded-lg bg-[#FFEBE7] font-medium text-gray-700"
+                            readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Unit</label>
+                        <select id="toUnit"
+                            class="w-full px-4 py-3 border border-[#FFB5A7] rounded-lg focus:ring-2 focus:ring-[#FF9A8C] focus:border-[#FF9A8C] transition-all duration-200 cursor-pointer">
+                            <option value="cup">🥤 Cups</option>
+                            <option value="tbsp">🥢 Tablespoons</option>
+                            <option value="tsp">🥄 Teaspoons</option>
+                            <option value="yogurt">🫐 Yogurt Container (12 oz)</option>
+                            <option value="ladle">🥄 Ladle (120 ml)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Guide Section -->
+        <div class="mt-12 bg-[#FFF5F2] p-6 rounded-2xl shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 flex items-center">
+                <i class="fas fa-book-open mr-3 text-[#FF9A8C]"></i>How to Use
+            </h2>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Basic Instructions</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                        <li>Enter the value you want to convert in the "Value" field</li>
+                        <li>Select the unit you're converting from in the "Convert From" section</li>
+                        <li>Select the desired unit in the "Convert To" section</li>
+                        <li>Use the swap button (↔️) to quickly switch between units</li>
+                    </ol>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Common Measurement Equivalents</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium text-gray-700">Volume Measurements:</h4>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                <li>1 Cup = 240 ml</li>
+                                <li>1 Tablespoon = 15 ml</li>
+                                <li>1 Teaspoon = 5 ml</li>
+                                <li>1 Ladle = 120 ml</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-700">Weight Measurements:</h4>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                <li>1 Kilogram = 1000 grams</li>
+                                <li>1 Pound = 453.6 grams</li>
+                                <li>1 Ounce = 28.35 grams</li>
+                                <li>1 Yogurt Container = 340 grams</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Tips</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li>For precise baking, use weight measurements (grams) instead of volume</li>
+                        <li>The yogurt container measurement is based on a standard 12 oz container</li>
+                        <li>Liquid ingredients should be measured using volume units (ml, l)</li>
+                        <li>Dry ingredients are best measured using weight units (g, kg)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+    <script>
+        const conversionRates = {
+            // Base unit is ml for liquids and g for solids
+            'ml': 1,
+            'l': 1000,
+            'g': 1,
+            'kg': 1000,
+            'oz': 28.3495,
+            'lb': 453.592,
+            'cup': 240,
+            'tbsp': 15,
+            'tsp': 5,
+            'yogurt': 340,    // Yogurt container (12 oz)
+            'ladle': 120      // Ladle (120 ml)
+        };
+
+        function convert() {
+            const fromValue = parseFloat(document.getElementById('fromValue').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+
+            if (isNaN(fromValue)) {
+                document.getElementById('toValue').value = '';
+                return;
+            }
+
+            // Convert to base unit (ml or g)
+            let baseValue = fromValue * conversionRates[fromUnit];
+
+            // Convert from base unit to target unit
+            let result = baseValue / conversionRates[toUnit];
+
+            // Round to 2 decimal places
+            result = Math.round(result * 100) / 100;
+
+            document.getElementById('toValue').value = result;
+        }
+
+        // Add event listeners
+        document.getElementById('fromValue').addEventListener('input', convert);
+        document.getElementById('fromUnit').addEventListener('change', convert);
+        document.getElementById('toUnit').addEventListener('change', convert);
+
+        // Initial conversion
+        convert();
+
+        // Swap functionality
+        document.getElementById('swapBtn').addEventListener('click', function () {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            const fromInput = document.getElementById('fromValue');
+            const toInput = document.getElementById('toValue');
+
+            // Store current values
+            const oldFromValue = fromInput.value;
+            const oldFromUnit = fromSelect.value;
+            const oldToValue = toInput.value;
+            const oldToUnit = toSelect.value;
+
+            // Get all options from both selects
+            const fromOptions = Array.from(fromSelect.options);
+            const toOptions = Array.from(toSelect.options);
+
+            // Clear both selects
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+
+            // Swap the options between selects
+            toOptions.forEach(option => fromSelect.appendChild(option.cloneNode(true)));
+            fromOptions.forEach(option => toSelect.appendChild(option.cloneNode(true)));
+
+            // Set the previously selected values to opposite selects
+            fromSelect.value = oldToUnit;
+            toSelect.value = oldFromUnit;
+
+            // Set the value
+            fromInput.value = oldToValue || oldFromValue;
+
+            // Trigger conversion
+            convert();
+        });
+    </script>
+</body>
+
+</html>
